@@ -16,7 +16,7 @@ const io = require('socket.io')(server,{
       }
 });
 
-app.set('views',path.join(__dirname,'views'));
+app.set('views',path.join(__dirname,'Views'));
 app.engine('ejs',engine);
 app.set('view engine','ejs');
 app.use('/Public',express.static(path.join(__dirname,'Public')));
