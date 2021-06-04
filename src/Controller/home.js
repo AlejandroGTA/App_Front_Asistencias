@@ -204,7 +204,7 @@ exports.asistenciaEvento = async function(req, res, next){
     const {NameAlumno, LastNameAlumno, NameEvent, Localizacion, Url} = req.body;
 
     let data = {NameAlumno, LastNameAlumno, NameEvent, Localizacion};
-    let response = await fetch(Url + '/Asistencia/' + req.params.id, {
+    let response = await fetch(Url + 'Asistencia/' + req.params.id, {
         method: 'POST', 
         credentials: 'include',
         body: JSON.stringify(data),
