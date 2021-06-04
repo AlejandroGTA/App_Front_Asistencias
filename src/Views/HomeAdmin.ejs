@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+ 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <script src="../public/Scripts/homeMaestros.js"></script>
+    <link rel="stylesheet" href="../public/Styles/homeMaestros.css">
+
+
+    <style>
+        #map {
+            width: 100%;
+            height: 80%;
+        }
+        #coords{width: 500px;}
+    </style>
+</head>
+<body>
+
+    <div class="modal fade" id="EditarAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Editar Evento</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <!-- cuerpo -->
+                <div class="wrapper fadeInDown">
+                    <div id="formContent">
+                        <form id="formEdit" method="POST" action="/actualizarEvento/" enctype="application/x-www-form-urlencoded">
+                            <div class="form-group" style="display: none;">
+                                <label for="id">id</label>
+                                <input type="text" id="id" class="" name="id" placeholder="id"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="Nombre">Nombre</label>
+                                <input type="text" id="Name" class="" name="Name" placeholder="Nombre"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="Apellidos">Apellidos</label>
+                                <input type="text" id="LastName" class="" name="LastName" placeholder="Apellidos"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="Rol">Rol</label>
+                                <select name="TypeUser" id="TypeUser">
+                                    <option value="Alumno">Alumno</option>
+                                    <option value="Maestro">Maestro</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                                
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="Update(this.parentNode.parentNode);">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="modal fade" id="AddAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Agregar Evento</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- cuerpo -->
+            <div class="wrapper fadeInDown">
+                <div id="formContent">
+                    <form id="formAdd" method="POST" action="" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Nombre del Evento</label>
+                            <input type="text" id="NameEvent" class="" name="NameEvent" placeholder="NameEvent"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Fecha de Inicio</label>
+                            <input name="TiempoInicio" type="datetime-local"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Fecha de Expiracion</label>
+                            <input name="TiempoExpiracion"  type="datetime-local" ></input>
+                        </div>
+<!-- 
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Fecha de Expiración</label>
+                            <input id="checkTimer" name="FechaCreacion"  type="checkbox" onclick="ShowTimer()" ></input>
+                            <br>
+                            <input id="tiempoExpiracion" name="TiempoExpiracion"  type="number" placeholder="Minutos" style="display: none;" value="0"></input>
+                        </div> -->
+
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Coordenadas</label>
+                            <input id="checkMap" name="FechaCreacion"  type="checkbox" onchange="ShowMap()"></input>
+                            <div id="map" style="width: 450px; height: 350px; display: none;"></div>
+                            <input id="coords" type="text" style="display: none;" value="0,0">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="ADD(this.parentNode.parentNode);">Save changes</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <form action="#" method="get">
+                    <div class="input-group">
+                        <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                        <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                        </span>
+                    </div>
+                </form>
+                <a class="btn btn-info" href="/">Home</a>
+                <a class="btn btn-info" href="/signOut">Log Out</a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddAula">Add</button>
+               
+            </div>
+            <div class="col-md-9">
+             <table class="table table-list-search">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Tipo de Rol</th>
+                            <th scope="col">Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i= 0; i< Usuarios.length; i++){%>
+                            <tr>
+                                <td style="display: none;"><%= Usuarios[i]._id%></td>
+                                <td ><%= Usuarios[i].Name%></td>
+                                <td><%= Usuarios[i].LastName%></td>
+                                <td><%= Usuarios[i].TypeUser%></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EditarAula" onclick="Edit(this.parentNode.parentNode);">Edit</button>
+                                    <button class="btn btn-secundary" type="submit" onclick="Delete(this.parentNode.parentNode);">Delete</button>
+                                </td>
+                            </tr>
+                        <%}%>
+                    </tbody>
+                </table>   
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:3000";
+
+        async function Update(obj){
+            var UsuarioId = obj.getElementsByTagName('input')[0].value;
+            var NameUsuario = obj.getElementsByTagName('input')[1].value;
+            var LastNameUsuario = obj.getElementsByTagName('input')[2].value;
+            var TypeUsuario = obj.getElementsByTagName('select')[0].value;
+
+            var data = {"NameUsuario": NameUsuario, "LastNameUsuario": LastNameUsuario, "TypeUsuario": TypeUsuario};
+
+            console.log(data);
+
+            let response = await fetch('/Admin/'+UsuarioId,{
+                method: 'PUT', 
+                credentials: 'include',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json',
+                    'my-custom-header':"*"
+                }
+            });
+
+            let mensaje = await response.json();
+
+            if(response.status == 200){
+                alert("Actualizado");
+                location.reload();
+            }
+            else{
+                alert(mensaje.mensaje);
+            }
+        }
+      
+        function Edit(obj){
+            let formulario = document.getElementById('formEdit');
+
+            let UsuarioIdFormulario = formulario.getElementsByTagName('input')[0];
+            let NameUsuarioFormulario = formulario.getElementsByTagName('input')[1];
+            let LastNameFormulario = formulario.getElementsByTagName('input')[2];
+            let TypeUsuarioFormulario = formulario.getElementsByTagName('select')[0];
+            
+            
+            var UsuarioId = obj.getElementsByTagName('td')[0].innerText;
+            var NameUsuario = obj.getElementsByTagName('td')[1].innerText;
+            var LastName = obj.getElementsByTagName('td')[2].innerText;
+            var TypeUsuario = obj.getElementsByTagName('td')[3].innerText;
+
+            UsuarioIdFormulario.value = UsuarioId;
+            NameUsuarioFormulario.value = NameUsuario;
+            LastNameFormulario.value = LastName;
+            TypeUsuarioFormulario.value = TypeUsuario;
+        }
+
+        async function Delete(obj){
+            let id = obj.getElementsByTagName('td')[0].innerText;
+            let response = await fetch('/eliminarEvento/'+id, {
+                method: 'DELETE', 
+                credentials: 'include',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            let mensaje = await response.json();
+
+            if(response.status == 200){
+                alert("Eliminado");
+                location.reload();
+            }
+            else{
+                alert(mensaje.Mensaje);
+            }
+        }
+    </script>
+</body>
+</html>

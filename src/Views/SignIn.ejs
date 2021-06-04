@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../public/Styles/loginAlumnos.css">
+    <title>Login Maestro</title>
+</head>
+<body>
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <div class="fadeIn first">
+        <img src="../public/user-protection.png" id="icon" alt="User Icon" />
+      </div>
+      <form method="POST" action="/signin">
+        <input type="email" id="login" class="fadeIn second" name="Email" placeholder="Email">
+        <input type="password" id="password" class="fadeIn third" name="Passowrd" placeholder="Password">
+        <input type="button" class="fadeIn fourth" value="Log In" onclick="Enviar(this.parentNode)">
+      </form>
+      <div id="formFooter">
+        <a href="/">Home</a>
+        <a href="/signup">Sign Up</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    async function Enviar(obj){
+      
+      var url = '/signin';
+      var Email = obj.getElementsByTagName('input')[0].value.trim();
+      var Password = obj.getElementsByTagName('input')[1].value.trim();
+      var data = {"Email":Email, "Password": Password};
+
+      let response = await fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+        headers:
+          {
+            'Content-Type': 'application/json'
+          }
+        });
+      let datos = await response.json();
+      
+      if(response.status == 200){
+        window.location = datos.mensaje;
+      }
+      else{
+        alert(datos.mensaje);
+      }
+      
+    }
+  </script>
+</body>
+</html>

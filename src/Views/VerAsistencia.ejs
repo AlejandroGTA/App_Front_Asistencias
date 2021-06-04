@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="../public/Scripts/homeMaestros.js"></script>
+
+    <script src="../Public/Scripts/filesaver.js"></script>
+    <script src="../Public/Scripts/xlsx_full_min.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <title>Asistencia</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <form action="#" method="get">
+                    <div class="input-group">
+                        <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                        <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                        </span>
+                    </div>
+                </form>
+                <a class="btn btn-info" href="/home">Atras</a>
+                <a class="btn btn-secundary" onclick="Descargar()">Descargar</a>
+            </div>
+            <div class="col-md-9">
+                <img src="<%= Evento.QR%>" alt="none">
+                <h3 id="NameEvento" >Evento: <%= Evento.NameEvent%></h3>
+                <h3 id="MaestroId" style="display: none;"><%= Evento.MaestroId%></h3>
+             <table class="table table-list-search">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Localizacion</th> 
+                            <th scope="col">Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="TablaAlumnos">
+                        <% if(Evento.Asistencia.length != 0){%>
+                            <% for(var i= 0; i< Evento.Asistencia.length; i++){%>
+                                <tr>
+                                    <td ><%= Evento.Asistencia[i].NameAlumno%></td>
+                                    <td ><%= Evento.Asistencia[i].LastNameAlumno%></td>
+                                     <td><%= Evento.Asistencia[i].Localizacion%></td>
+                                    <td><%= Evento.Asistencia[i].DateAsistencia%></td>
+                                </tr>
+                            <%}%>
+                        <%}%>
+                    </tbody>
+                </table>   
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let MaestroId = document.getElementById('MaestroId').innerText;
+        let Asistencias = [];
+        
+        var socket = io("https://api-asistencias.herokuapp.com/");
+
+        window.onload = function(){
+            socket.emit('AddUser', MaestroId);
+        }
+
+        socket.on('Alumno', function(obj) {
+            let TablaAlumnos = document.getElementById('TablaAlumnos');
+            let NameAula = document.getElementById('NameEvento').innerText;
+            let NameMaestro = document.getElementById('MaestroId').innerText;
+
+            let tr =  `
+                <tr>
+                    <td>${obj.NameAlumno}</td>
+                    <td>${obj.LastNameAlumno}</td>
+                    <td>${obj.Localizacion}</td>
+                    <td>${new Date(obj.DateAsistencia)}</td>
+                </tr>
+            `;
+
+            let flagExistente = 0;    
+            if(Asistencias.length >= 1){
+                for(let i = 0; i < Asistencias.length; i++){
+                    if(Asistencias[i].NameAlumno == obj.NameAlumno && Asistencias[i].LastNameAlumno == obj.LastNameAlumno){
+                        flagExistente = 1;
+                    }
+                }
+            }
+            else{
+                flagExistente = 0;
+            }
+            if(flagExistente == 0){
+                TablaAlumnos.innerHTML = TablaAlumnos.innerHTML + tr;
+                Asistencias.push({
+                    NameAlumno: obj.NameAlumno,
+                    LastNameAlumno : obj.LastNameAlumno
+                });
+            } 
+        });
+    </script>
+
+    <script>
+        const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const EXCEL_EXTENSION = '.xlsx';
+
+        function Descargar(){
+            let TablaAlumnos = document.getElementById('TablaAlumnos');
+            let tablaAsistenciaAlumnos = [];
+            let nameEvento = document.getElementById('NameEvento');
+
+            for(let i = 0; i < TablaAlumnos.getElementsByTagName('tr').length; i++){
+                tablaAsistenciaAlumnos.push({
+                    "Nombre": TablaAlumnos.getElementsByTagName('tr')[i].getElementsByTagName('td')[0].innerText,
+                    "Apellidos": TablaAlumnos.getElementsByTagName('tr')[i].getElementsByTagName('td')[1].innerText,
+                    "Localizacion": TablaAlumnos.getElementsByTagName('tr')[i].getElementsByTagName('td')[2].innerText,
+                    "Fecha": TablaAlumnos.getElementsByTagName('tr')[i].getElementsByTagName('td')[3].innerText,
+                });
+            }
+
+            const worksSheet = XLSX.utils.json_to_sheet(tablaAsistenciaAlumnos);
+            const workBook = {
+                Sheets:{
+                    'data':worksSheet
+                },
+                SheetNames:['data']
+            };
+
+            const excelBuffer = XLSX.write(workBook,{
+                bookType: 'xlsx',
+                type: 'array'
+            });
+            
+            SaveExcel(excelBuffer, 'Asistencias_'+nameEvento.innerText);
+        }
+
+        function SaveExcel(buffer, fileName){
+            const Data = new Blob([buffer], {
+                type: EXCEL_TYPE
+        });
+
+        saveAs(Data, fileName + EXCEL_EXTENSION);
+            
+        }
+    </script>
+</body>
+</html>

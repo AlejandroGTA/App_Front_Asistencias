@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Class</title>
+ 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+    <script src="../public/Scripts/homeMaestros.js"></script>
+    <link rel="stylesheet" href="../public/Styles/homeMaestros.css">
+
+
+    <style>
+        #map {
+            width: 100%;
+            height: 80%;
+        }
+        #coords{width: 500px;}
+    </style>
+</head>
+<body>
+
+    <div class="modal fade" id="EditarAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Editar Evento</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <!-- cuerpo -->
+                <div class="wrapper fadeInDown">
+                    <div id="formContent">
+                        <form id="formEdit" method="POST" action="/actualizarEvento/" enctype="application/x-www-form-urlencoded">
+                            <div class="form-group" style="display: none;">
+                                <label for="exampleInputPassword1">id</label>
+                                <input type="text" id="id" class="" name="id" placeholder="id"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Nombre del Evento</label>
+                                <input type="text" id="Name" class="" name="Name" placeholder="Name"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Tiempo de Expiración</label>
+                                <input name="TiempoExpiracion"  type="datetime-local"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Tiempo de Creación</label>
+                                <input name="FechaCreacion"  type="datetime-local"></input>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Coordenadas</label>
+                                <input id="checkMapEdit" name="FechaCreacion"  type="checkbox" onchange="ShowMapEdit()"></input>
+                                <div id="mapEdit" style="width: 450px; height: 350px; display: none;"></div>
+                                <input id="coordsEdit" type="text" style="display: none;" value="0,0">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="Update(this.parentNode.parentNode);">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <div class="modal fade" id="AddAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Agregar Evento</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- cuerpo -->
+            <div class="wrapper fadeInDown">
+                <div id="formContent">
+                    <form id="formAdd" method="POST" action="" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <input type="text" id="id" class="" name="id" placeholder="id" value="<%= MaestroId%>"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Nombre del Evento</label>
+                            <input type="text" id="NameEvent" class="" name="NameEvent" placeholder="NameEvent"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Fecha de Inicio</label>
+                            <input name="TiempoInicio" type="datetime-local"></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Fecha de Expiracion</label>
+                            <input name="TiempoExpiracion"  type="datetime-local" ></input>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Coordenadas</label>
+                            <input id="checkMapAdd" name="FechaCreacion"  type="checkbox" onchange="ShowMapAdd()"></input>
+                            <div id="mapAdd" style="width: 450px; height: 350px; display: none;"></div>
+                            <input id="coordsAdd" type="text" style="display: none;" value="0,0">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="ADD(this.parentNode.parentNode);">Save changes</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <form action="#" method="get">
+                    <div class="input-group">
+                        <!-- USE TWITTER TYPEAHEAD JSON WITH API TO SEARCH -->
+                        <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                        </span>
+                    </div>
+                </form>
+                <a class="btn btn-info" href="/">Home</a>
+                <a class="btn btn-info" href="/signOut">Log Out</a>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddAula">Add</button>
+               
+            </div>
+            <div class="col-md-9">
+             <table class="table table-list-search">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name Event</th>
+                            <th scope="col">Localizacion</th>
+                            <th scope="col">TiempoInicio</th>
+                            <th scope="col">TiempoExpiracion</th>
+                            <th scope="col">Asistencias</th>
+                            <th scope="col">Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(var i= 0; i< Eventos.length; i++){%>
+                            <tr>
+                                <td style="display: none;"><%= Eventos[i]._id%></td>
+                                <td ><%= Eventos[i].NameEvent%></td>
+                                <td><%= Eventos[i].Localizacion%></td>
+                                <td><%= Eventos[i].TiempoInicio%></td>
+                                <td><%= Eventos[i].TiempoExpiracion%></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" onclick="Ver(this.parentNode.parentNode);">Ver</button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EditarAula" onclick="Edit(this.parentNode.parentNode);">Edit</button>
+                                    <button class="btn btn-secundary" type="submit" onclick="Delete(this.parentNode.parentNode);">Delete</button>
+                                </td>
+                            </tr>
+                        <%}%>
+                    </tbody>
+                </table>   
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var marker;          
+        var coords = {};
+        
+        initMap = function(){
+            let mapcheckEdit = document.getElementById('checkMapEdit').checked;
+            let mapcheckAdd = document.getElementById('checkMapAdd').checked;
+            let map;
+            let cordsShow;
+            navigator.geolocation.getCurrentPosition(
+                function (position){
+                coords =  {
+                    lng: position.coords.longitude,
+                    lat: position.coords.latitude
+                };
+                if(mapcheckAdd == 1){
+                    map = document.getElementById('mapAdd');
+                    cordsShow = document.getElementById('coordsAdd');
+                }
+                else if(mapcheckEdit == 1){
+                    map = document.getElementById('mapEdit');
+                    cordsShow = document.getElementById('coordsEdit');
+                    let cordenadasSplit = cordsShow.value.split(',');
+                    coords.lat =  cordenadasSplit[0];
+                    coords.lng = cordenadasSplit[1];
+                }
+                else{
+                    map = document.getElementById('mapEdit');
+                    cordsShow = document.getElementById('coordsEdit');
+                }
+                setMapa(coords, map, cordsShow); 
+
+                },function(error){console.log(error);});
+        }
+        
+        
+        
+        function setMapa(coords, mapShow, cordsShow){   
+            var map = new google.maps.Map(mapShow,
+            {
+                zoom: 13,
+                center:new google.maps.LatLng(coords.lat,coords.lng),
+            });
+            let coordenadasInput = cordsShow;
+            coordenadasInput.value = coords.lat + "," + coords.lng;
+            
+            marker = new google.maps.Marker({
+            map: map,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+            position: new google.maps.LatLng(coords.lat,coords.lng),
+    
+            });
+           
+            marker.addListener('click', toggleBounce);
+            
+            marker.addListener( 'dragend', function (event)
+            {
+            
+                cordsShow.value = this.getPosition().lat()+","+ this.getPosition().lng();
+            });
+        }
+        
+        function toggleBounce() {
+          if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+          } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+          }
+        } 
+        initMap();
+    </script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap"></script>
+
+    <script>
+        function ShowMapAdd(){
+            let checkMap = document.getElementById('checkMapAdd').checked;
+            let map = document.getElementById('mapAdd');
+            let coords = document.getElementById('coordsAdd');
+
+            if(checkMap == true){
+                map.style.display = "block";
+                coords.style.display = "block";
+            }
+            else{
+                map.style.display = "none";
+                coords.style.display = "none";
+            }
+            initMap();
+        }
+
+        function ShowMapEdit(){
+            let checkMap = document.getElementById('checkMapEdit').checked;
+            let map = document.getElementById('mapEdit');
+            let coords = document.getElementById('coordsEdit');
+
+            if(checkMap == true){
+                map.style.display = "block";
+                coords.style.display = "block";
+            }
+            else{
+                map.style.display = "none";
+                coords.style.display = "none";
+            }
+            initMap();
+        }
+    </script>
+
+    <script>
+        async function Ver(obj){
+            // let VerAula = document.getElementById('NombreVerAula');
+            let id = obj.getElementsByTagName('td')[0].innerText;
+            // let Datos = obj.getElementsByTagName('input')[0].value;
+
+            
+            let response = await fetch('/verAsistenciaEvento/'+id, {
+                method: 'GET', 
+                credentials: 'include',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            });
+            let mensaje = await response.json();
+            if(response.status == 200){
+                window.location = mensaje.Render;
+            }
+            else{
+                alert(mensaje.Mensaje);
+            }
+        //     var xhr = new XMLHttpRequest();
+        //     var url = "/Maestro/ver/" + Name;
+        //     xhr.open("POST", url, true);
+        //     xhr.setRequestHeader("Content-Type", "application/json");
+        //     var data = JSON.stringify({});
+        //     xhr.onreadystatechange = function() {
+        //     if (this.readyState == 4 && this.status == 200) {
+        //         if(this.responseText == "/Maestro/Ver"){
+        //             window.location = this.responseText;
+        //         }
+        //     }
+        // };
+        //     xhr.send(data);
+        }
+
+        async function Update(obj){
+            var id = obj.getElementsByTagName('input')[0].value;
+            var NameEvento = obj.getElementsByTagName('input')[1].value;
+            var FechaInicio = obj.getElementsByTagName('input')[2].value;
+            var FechaExpiracion = obj.getElementsByTagName('input')[3].value;
+            let checkCordenadas = obj.getElementsByTagName('input')[4].checked;
+            let Localizacion = obj.getElementsByTagName('input')[5].value;
+
+            if(checkCordenadas == 0){
+                Localizacion = "0,0";
+            }
+
+            var data = {"NameEvento": NameEvento, "TiempoInicio": new Date(FechaInicio), "TiempoExpiracion": new Date(FechaExpiracion), Localizacion};
+        
+            let response = await fetch('/actualizarEvento/'+id, {
+                method: 'PUT', 
+                credentials: 'include',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            let mensaje = await response.json();
+
+            if(response.status == 200){
+                alert("Guardado");
+                location.reload();
+            }
+            else{
+                alert(mensaje.mensaje);
+            }
+        }
+
+        async function ADD(obj){
+            let MaestroId = obj.getElementsByTagName('input')[0].value;
+            let NameEvent = obj.getElementsByTagName('input')[1].value;
+            let FechaInicio = obj.getElementsByTagName('input')[2].value;
+            let FechaExpiracion = obj.getElementsByTagName('input')[3].value;
+            let checkCordenadas = obj.getElementsByTagName('input')[4].checked;
+            let cordenads = obj.getElementsByTagName('input')[5].value;
+
+            let data;
+            if(checkCordenadas == true){
+                data = {
+                    "MaestroId": MaestroId,
+                    "NameEvent": NameEvent,
+                    "TiempoInicio": new Date(FechaInicio),
+                    "TiempoExpiracion": new Date(FechaExpiracion),
+                    "Localizacion": cordenads
+                };
+            }
+            else{
+                data = {
+                    "MaestroId": MaestroId,
+                    "NameEvent": NameEvent,
+                    "TiempoInicio": new Date(FechaInicio),
+                    "TiempoExpiracion": new Date(FechaExpiracion),
+                    "Localizacion": "0,0"
+                };
+            }
+            console.log(obj);
+            console.log(checkCordenadas);
+            console.log(data);
+
+            let response = await fetch('/agregarEvento', {
+                method: 'POST', 
+                credentials: 'include',
+                body: JSON.stringify(data),
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            });
+        
+            let mensaje = await response.json();
+
+            if(response.status == 200){
+                alert("Guardado");
+                location.reload();
+            }
+            else{
+                alert(mensaje.Mensaje);
+            }
+        }
+      
+        function Edit(obj){
+            let formulario = document.getElementById('formEdit');
+
+            let EventoIdFormulario = formulario.getElementsByTagName('input')[0];
+            let NameEventoFormulario = formulario.getElementsByTagName('input')[1];
+            let FechaInicioFormulario = formulario.getElementsByTagName('input')[2];
+            let FechaExpiracionFormulario = formulario.getElementsByTagName('input')[3];
+            let MapCheckShow = formulario.getElementsByTagName('input')[4];
+            let LocalizacionFormulario = formulario.getElementsByTagName('input')[5];
+
+            var EventoId = obj.getElementsByTagName('td')[0].innerText;
+            var NameEvento = obj.getElementsByTagName('td')[1].innerText;
+            let LocalizacionEvento = obj.getElementsByTagName('td')[2].innerText;
+            var FechaInicio = obj.getElementsByTagName('td')[3].innerText;
+            var FechaExpiracion = obj.getElementsByTagName('td')[4].innerText;
+
+            if(LocalizacionEvento != '0,0'){
+                MapCheckShow.checked = true;
+                LocalizacionFormulario.value = LocalizacionEvento;
+            }
+
+            EventoIdFormulario.value = EventoId;
+            NameEventoFormulario.value = NameEvento;
+            FechaInicioFormulario.value = TransformarDate(FechaInicio);
+            FechaExpiracionFormulario.value = TransformarDate(FechaExpiracion);
+            ShowMapEdit();
+        }
+
+        function TransformarDate(fechaCambiar){
+            let fecha;
+            let fechaDate = new Date(fechaCambiar);
+
+            fecha = fechaDate.getFullYear() + "-";
+
+            if((fechaDate.getMonth() + 1) >= 10){
+                fecha += (fechaDate.getMonth() + 1) + "-";
+            }
+            else{
+                fecha += "0" + (fechaDate.getMonth() + 1) + "-";
+            }
+
+            if(fechaDate.getDate() >= 10){
+                fecha += fechaDate.getDate() + "T";
+            }
+            else{
+                fecha += "0" + fechaDate.getDate() + "T";
+            }
+
+            if(fechaDate.getHours() >= 10){
+                fecha += fechaDate.getHours() + ":";
+            }
+            else{
+                fecha += "0" + fechaDate.getHours() + ":";
+            }
+
+            if(fechaDate.getMinutes() >= 10){
+                fecha += fechaDate.getMinutes() ;
+            }
+            else{
+                fecha += "0" + (fechaDate.getMinutes() + 1);
+            }
+
+            return fecha;
+        }
+
+        async function Delete(obj){
+            let id = obj.getElementsByTagName('td')[0].innerText;
+            let response = await fetch('/eliminarEvento/'+id, {
+                method: 'DELETE', 
+                credentials: 'include',
+                headers:{
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            let mensaje = await response.json();
+
+            if(response.status == 200){
+                alert("Eliminado");
+                location.reload();
+            }
+            else{
+                alert(mensaje.Mensaje);
+            }
+        }
+    </script>
+</body>
+</html>
