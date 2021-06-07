@@ -29,9 +29,6 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Editar Evento</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
             </div>
             <div class="modal-body">
                 <!-- cuerpo -->
@@ -57,7 +54,7 @@
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Coordenadas</label>
                                 <input id="checkMapEdit" name="FechaCreacion"  type="checkbox" onchange="ShowMapEdit()"></input>
-                                <div id="mapEdit" style="width: 450px; height: 350px; display: none;"></div>
+                                <div id="mapEdit" style="width: 7cm; height: 9cm; display: none;"></div>
                                 <input id="coordsEdit" type="text" style="display: none;" value="0,0">
                             </div>
                         </form>
@@ -73,20 +70,17 @@
       </div>
 
     <div class="modal fade" id="AddAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Agregar Evento</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-            </button>
         </div>
         <div class="modal-body">
             <!-- cuerpo -->
             <div class="wrapper fadeInDown">
                 <div id="formContent">
-                    <form id="formAdd" method="POST" action="" enctype="application/x-www-form-urlencoded">
-                        <div class="form-group">
+                    <form id="formAdd" method="POST" action="" enctype="application/x-www-form-urlencoded" class="row">
+                        <div class="form-group" style="display: none;">
                             <input type="text" id="id" class="" name="id" placeholder="id" value="<%= MaestroId%>"></input>
                         </div>
                         <div class="form-group">
@@ -101,10 +95,10 @@
                             <label for="exampleInputPassword1">Fecha de Expiracion</label>
                             <input name="TiempoExpiracion"  type="datetime-local" ></input>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-sm-6 ml-auto card-body">
                             <label for="exampleInputPassword1">Coordenadas</label>
                             <input id="checkMapAdd" name="FechaCreacion"  type="checkbox" onchange="ShowMapAdd()"></input>
-                            <div id="mapAdd" style="width: 450px; height: 350px; display: none;"></div>
+                            <div id="mapAdd" style="width: 7cm; height: 9cm; display: none;"></div>
                             <input id="coordsAdd" type="text" style="display: none;" value="0,0">
                         </div>
                     </form>
@@ -131,12 +125,14 @@
                         </span>
                     </div>
                 </form>
+                <br>
                 <a class="btn btn-info" href="/">Home</a>
                 <a class="btn btn-info" href="/signOut">Log Out</a>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddAula">Add</button>
                
             </div>
-            <div class="col-md-9">
+            <br>
+            <div class=" table-responsive">
              <table class="table table-list-search">
                     <thead>
                         <tr>
@@ -149,7 +145,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% for(var i= 0; i< Eventos.length; i++){%>
+                        <% for(var i= Eventos.length -1; i >= 0 ; i--){%>
                             <tr>
                                 <td style="display: none;"><%= Eventos[i]._id%></td>
                                 <td ><%= Eventos[i].NameEvent%></td>
@@ -254,11 +250,11 @@
 
             if(checkMap == true){
                 map.style.display = "block";
-                coords.style.display = "block";
+                // coords.style.display = "block";
             }
             else{
                 map.style.display = "none";
-                coords.style.display = "none";
+                // coords.style.display = "none";
             }
             initMap();
         }
@@ -270,11 +266,11 @@
 
             if(checkMap == true){
                 map.style.display = "block";
-                coords.style.display = "block";
+                // coords.style.display = "block";
             }
             else{
                 map.style.display = "none";
-                coords.style.display = "none";
+                // coords.style.display = "none";
             }
             initMap();
         }
@@ -282,11 +278,8 @@
 
     <script>
         async function Ver(obj){
-            // let VerAula = document.getElementById('NombreVerAula');
             let id = obj.getElementsByTagName('td')[0].innerText;
-            // let Datos = obj.getElementsByTagName('input')[0].value;
-
-            
+        
             let response = await fetch('/verAsistenciaEvento/'+id, {
                 method: 'GET', 
                 credentials: 'include',
@@ -301,19 +294,6 @@
             else{
                 alert(mensaje.Mensaje);
             }
-        //     var xhr = new XMLHttpRequest();
-        //     var url = "/Maestro/ver/" + Name;
-        //     xhr.open("POST", url, true);
-        //     xhr.setRequestHeader("Content-Type", "application/json");
-        //     var data = JSON.stringify({});
-        //     xhr.onreadystatechange = function() {
-        //     if (this.readyState == 4 && this.status == 200) {
-        //         if(this.responseText == "/Maestro/Ver"){
-        //             window.location = this.responseText;
-        //         }
-        //     }
-        // };
-        //     xhr.send(data);
         }
 
         async function Update(obj){
@@ -443,10 +423,10 @@
             }
 
             if(fechaDate.getDate() >= 10){
-                fecha += fechaDate.getDate() + "T";
+                fecha += (fechaDate.getDate()) + "T";
             }
             else{
-                fecha += "0" + fechaDate.getDate() + "T";
+                fecha += "0" + (fechaDate.getDate()) + "T";
             }
 
             if(fechaDate.getHours() >= 10){
@@ -457,10 +437,10 @@
             }
 
             if(fechaDate.getMinutes() >= 10){
-                fecha += fechaDate.getMinutes() ;
+                fecha += fechaDate.getMinutes();
             }
             else{
-                fecha += "0" + (fechaDate.getMinutes() + 1);
+                fecha += "0" + (fechaDate.getMinutes());
             }
 
             return fecha;

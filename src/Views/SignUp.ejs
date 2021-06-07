@@ -14,7 +14,7 @@
     <div class="wrapper fadeInDown">
         <div id="formContent">
             <div class="fadeIn first">
-                <img src="../public/user-protection.png" id="icon" alt="User Icon" />
+                <img src="../public/user-protection.png" id="icon" alt="User Icon" style="width: 30%;" />
             </div>
             <form method="POST" action="/Maestro/signup" enctype="application/x-www-form-urlencoded">
                 <input type="text" id="Name" class="fadeIn second" name="Name" placeholder="Name">
@@ -31,7 +31,7 @@
     </div>
     <script>
        async function Enviar(obj){
-            // var url = 'http://127.0.0.1:3000/signup';
+            
             let url = '/signup'
             var Name = obj.getElementsByTagName('input')[0].value.trim();
             var LastName = obj.getElementsByTagName('input')[1].value.trim();
@@ -40,9 +40,9 @@
             var data = {"Name": Name, "LastName":LastName, "Email":Email, "Password": Password};
 
             let response = await fetch(url, {
-                method: 'POST', // or 'PUT'
+                method: 'POST',
                 credentials: 'include',
-                body: JSON.stringify(data), // data can be `string` or {object}!
+                body: JSON.stringify(data),
                 headers:{
                     'Content-Type': 'application/json'
                 }

@@ -12,12 +12,13 @@
     <script src="../Public/Scripts/filesaver.js"></script>
     <script src="../Public/Scripts/xlsx_full_min.js"></script>
 
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="../Public/Scripts/socket.io.min.js"></script>
     
     <title>Asistencia</title>
 </head>
 <body>
     <div class="container">
+
         <div class="row">
             <div class="col-md-3">
                 <form action="#" method="get">
@@ -29,14 +30,29 @@
                         </span>
                     </div>
                 </form>
+                <br>
                 <a class="btn btn-info" href="/home">Atras</a>
                 <a class="btn btn-secundary" onclick="Descargar()">Descargar</a>
             </div>
-            <div class="col-md-9">
-                <img src="<%= Evento.QR%>" alt="none">
-                <h3 id="NameEvento" >Evento: <%= Evento.NameEvent%></h3>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-5 col-sm-8 col-md-8 col-lg-8 col-xl-1 ">
+                <img class="rounded mx-auto d-block" src="<%= Evento.QR%>" alt="none">
+                <h3 class="ml-2" id="NameEvento" >Evento: <%= Evento.NameEvent%></h3>
                 <h3 id="MaestroId" style="display: none;"><%= Evento.MaestroId%></h3>
-             <table class="table table-list-search">
+            </div>
+            <div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-1 ">
+                <img class="rounded mx-auto d-block" src="<%= paginaQR.QR%>" alt="none">
+                <h3>Login</h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 table-responsive">
+                <table class="table table-list-search">
                     <thead>
                         <tr>
                             <th scope="col">Name</th>
@@ -51,7 +67,7 @@
                                 <tr>
                                     <td ><%= Evento.Asistencia[i].NameAlumno%></td>
                                     <td ><%= Evento.Asistencia[i].LastNameAlumno%></td>
-                                     <td><%= Evento.Asistencia[i].Localizacion%></td>
+                                    <td><%= Evento.Asistencia[i].Localizacion%></td>
                                     <td><%= Evento.Asistencia[i].DateAsistencia%></td>
                                 </tr>
                             <%}%>
@@ -66,7 +82,11 @@
         let MaestroId = document.getElementById('MaestroId').innerText;
         let Asistencias = [];
         
-        var socket = io("https://api-asistencias.herokuapp.com/");
+        var socket = io("<%=Url%>", {
+            extraHeaders: {
+                "my-custom-header": "abcd"
+            }
+        });
 
         window.onload = function(){
             socket.emit('AddUser', MaestroId);

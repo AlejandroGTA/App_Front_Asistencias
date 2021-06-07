@@ -1,7 +1,5 @@
 const express = require('express');
 const app = express();
-// const http = require('http');
-// const server = http.createServer(app);
 const path = require('path');
 const engine = require('ejs-mate');
 const bodyParser = require('body-parser');
@@ -24,6 +22,6 @@ app.use(session({
 app.use('/', require('./Routes/Home'));
 
 const port = process.env.PORT || 5000;
-app.listen(port, '0.0.0.0', function(){
+app.listen(port,'0.0.0.0', function(){
     console.log("Server ON: " + port);
 });

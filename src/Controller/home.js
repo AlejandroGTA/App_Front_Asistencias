@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const fetch = require('node-fetch');
 const config = require('../appConfig');
 const url = config.API_URL;
@@ -108,7 +109,7 @@ exports.postEvent = async function(req, res, next){
     let {MaestroId, NameEvent, TiempoInicio, TiempoExpiracion, Localizacion} = req.body;
 
     let data = {MaestroId, NameEvent, "TiempoInicio":TiempoInicio, "TiempoExpiracion":TiempoExpiracion, Localizacion};
-    console.log(data);
+   
     let response = await fetch(url + '/Maestro/generarEventos', {
         method: 'POST', 
         credentials: 'include',
@@ -129,7 +130,7 @@ exports.putEvento = async function(req, res, next){
     let {NameEvento, TiempoInicio, TiempoExpiracion, Localizacion} = req.body;
 
     let data = {"NameEvent":NameEvento, TiempoInicio, TiempoExpiracion, Localizacion};
-
+    
     let response = await fetch(url+'/Maestro/actualizarEvento/'+id, {
         method: 'PUT', 
         credentials: 'include',
@@ -195,8 +196,22 @@ exports.ver = async function(req, res, next){
 
     let mensjae = await response.json();
 
+    let responseQR = await fetch(url+'/Maestro/getQRPagina/', {
+        method: 'POST', 
+        credentials: 'include',
+        body: JSON.stringify({URL:config.APP_URL}),
+        headers:{
+            'Content-Type': 'application/json',
+            'Usuario-Token': req.session.user.Token
+        }
+    });
+
+    let paginaQR = await responseQR.json();
+
     res.render('VerAsistencia',{ 
-        Evento: mensjae[0]
+        Evento: mensjae[0],
+        paginaQR,
+        Url: config.API_URL
     });
 };
 
@@ -204,7 +219,7 @@ exports.asistenciaEvento = async function(req, res, next){
     const {NameAlumno, LastNameAlumno, NameEvent, Localizacion, Url} = req.body;
 
     let data = {NameAlumno, LastNameAlumno, NameEvent, Localizacion};
-    let response = await fetch(Url + 'Asistencia/' + req.params.id, {
+    let response = await fetch(Url + '/Asistencia/' + req.params.id, {
         method: 'POST', 
         credentials: 'include',
         body: JSON.stringify(data),
@@ -215,6 +230,7 @@ exports.asistenciaEvento = async function(req, res, next){
     });
 
     let mensaje =  await response.json();
+
     if(mensaje.Mensaje == "Datos guardados"){
         res.status(response.status).json({Mensaje:"Success"});
     }

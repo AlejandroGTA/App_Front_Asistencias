@@ -24,108 +24,6 @@
 </head>
 <body>
 
-    <div class="modal fade" id="EditarAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Editar Evento</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <!-- cuerpo -->
-                <div class="wrapper fadeInDown">
-                    <div id="formContent">
-                        <form id="formEdit" method="POST" action="/actualizarEvento/" enctype="application/x-www-form-urlencoded">
-                            <div class="form-group" style="display: none;">
-                                <label for="id">id</label>
-                                <input type="text" id="id" class="" name="id" placeholder="id"></input>
-                            </div>
-                            <div class="form-group">
-                                <label for="Nombre">Nombre</label>
-                                <input type="text" id="Name" class="" name="Name" placeholder="Nombre"></input>
-                            </div>
-                            <div class="form-group">
-                                <label for="Apellidos">Apellidos</label>
-                                <input type="text" id="LastName" class="" name="LastName" placeholder="Apellidos"></input>
-                            </div>
-                            <div class="form-group">
-                                <label for="Rol">Rol</label>
-                                <select name="TypeUser" id="TypeUser">
-                                    <option value="Alumno">Alumno</option>
-                                    <option value="Maestro">Maestro</option>
-                                    <option value="Admin">Admin</option>
-                                </select>
-                                
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" onclick="Update(this.parentNode.parentNode);">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    <div class="modal fade" id="AddAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Agregar Evento</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <!-- cuerpo -->
-            <div class="wrapper fadeInDown">
-                <div id="formContent">
-                    <form id="formAdd" method="POST" action="" enctype="application/x-www-form-urlencoded">
-                        <div class="form-group">
-                            
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Nombre del Evento</label>
-                            <input type="text" id="NameEvent" class="" name="NameEvent" placeholder="NameEvent"></input>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Fecha de Inicio</label>
-                            <input name="TiempoInicio" type="datetime-local"></input>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Fecha de Expiracion</label>
-                            <input name="TiempoExpiracion"  type="datetime-local" ></input>
-                        </div>
-<!-- 
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Fecha de Expiración</label>
-                            <input id="checkTimer" name="FechaCreacion"  type="checkbox" onclick="ShowTimer()" ></input>
-                            <br>
-                            <input id="tiempoExpiracion" name="TiempoExpiracion"  type="number" placeholder="Minutos" style="display: none;" value="0"></input>
-                        </div> -->
-
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Coordenadas</label>
-                            <input id="checkMap" name="FechaCreacion"  type="checkbox" onchange="ShowMap()"></input>
-                            <div id="map" style="width: 450px; height: 350px; display: none;"></div>
-                            <input id="coords" type="text" style="display: none;" value="0,0">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="ADD(this.parentNode.parentNode);">Save changes</button>
-        </div>
-        </div>
-    </div>
-    </div>
-
     <div class="container">
         <div class="row">
             <div class="col-md-3">
@@ -138,12 +36,12 @@
                         </span>
                     </div>
                 </form>
+                <br>
                 <a class="btn btn-info" href="/">Home</a>
                 <a class="btn btn-info" href="/signOut">Log Out</a>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AddAula">Add</button>
-               
             </div>
-            <div class="col-md-9">
+            <br>
+            <div class="col-md-9 table-responsive">
              <table class="table table-list-search">
                     <thead>
                         <tr>
