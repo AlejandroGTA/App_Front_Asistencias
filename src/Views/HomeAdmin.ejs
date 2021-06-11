@@ -23,6 +23,52 @@
     </style>
 </head>
 <body>
+    <div class="modal fade" id="EditarAula" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Editar Evento</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- cuerpo -->
+                    <div class="wrapper fadeInDown">
+                        <div id="formContent">
+                            <form id="formEdit" method="POST" action="/actualizarEvento/" enctype="application/x-www-form-urlencoded">
+                                <div class="form-group" style="display: none;">
+                                    <label for="id">id</label>
+                                    <input type="text" id="id" class="" name="id" placeholder="id"></input>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Nombre">Nombre</label>
+                                    <input type="text" id="Name" class="" name="Name" placeholder="Nombre"></input>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Apellidos">Apellidos</label>
+                                    <input type="text" id="LastName" class="" name="LastName" placeholder="Apellidos"></input>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Rol">Rol</label>
+                                    <select name="TypeUser" id="TypeUser">
+                                        <option value="Alumno">Alumno</option>
+                                        <option value="Maestro">Maestro</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="Update(this.parentNode.parentNode);">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div class="row">
@@ -40,6 +86,7 @@
                 <a class="btn btn-info" href="/">Home</a>
                 <a class="btn btn-info" href="/signOut">Log Out</a>
             </div>
+
             <br>
             <div class="col-md-9 table-responsive">
              <table class="table table-list-search">
@@ -71,8 +118,6 @@
     </div>
 
     <script>
-        const API_URL = "http://127.0.0.1:3000";
-
         async function Update(obj){
             var UsuarioId = obj.getElementsByTagName('input')[0].value;
             var NameUsuario = obj.getElementsByTagName('input')[1].value;
@@ -125,23 +170,25 @@
         }
 
         async function Delete(obj){
-            let id = obj.getElementsByTagName('td')[0].innerText;
-            let response = await fetch('/eliminarEvento/'+id, {
-                method: 'DELETE', 
-                credentials: 'include',
-                headers:{
-                    'Content-Type': 'application/json'
+            if(confirm("Quieres Eliminar el Usuario")){
+                let id = obj.getElementsByTagName('td')[0].innerText;
+                let response = await fetch('/eliminarEvento/'+id, {
+                    method: 'DELETE', 
+                    credentials: 'include',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                let mensaje = await response.json();
+    
+                if(response.status == 200){
+                    alert("Eliminado");
+                    location.reload();
                 }
-            });
-
-            let mensaje = await response.json();
-
-            if(response.status == 200){
-                alert("Eliminado");
-                location.reload();
-            }
-            else{
-                alert(mensaje.Mensaje);
+                else{
+                    alert(mensaje.Mensaje);
+                }
             }
         }
     </script>
