@@ -261,6 +261,27 @@ exports.putUsuario = async function(req, res, next){
     }
 };
 
+exports.deleteUsuario = async function(req, res, next){
+    let usuarioId = req.params.id;
+
+    let response = await fetch(url + '/Admin/' + usuarioId, {
+        method: 'delete', 
+        credentials: 'include',
+        headers:{
+            'Content-Type': 'application/json',
+            'Usuario-Token': req.session.user.Token
+        }
+    });
+
+    let mensaje = await response.json();
+    if(response.status == 200){
+        res.status(response.status).json(mensaje);
+    }
+    else{
+        res.status(response.status).json(mensaje);
+    }
+}
+
 exports.signOut = function(req, res, next){
     delete req.session.user;
     res.redirect('/signin');

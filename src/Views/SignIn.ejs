@@ -7,6 +7,7 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../public/Styles/loginAlumnos.css">
+    <link rel="stylesheet" href="../Public/Styles/loader.css">
     <title>Login Maestro</title>
 </head>
 <body>
@@ -15,24 +16,44 @@
       <div class="fadeIn first">
         <img src="../public/user-protection.png" id="icon" alt="User Icon" style="width: 30%;"/>
       </div>
-      <form method="POST" action="/signin">
+      <form method="POST" action="/signin" class="text-center">
         <input type="email" id="login" class="fadeIn second" name="Email" placeholder="Email">
         <input type="password" id="password" class="fadeIn third" name="Passowrd" placeholder="Password">
-        <input type="button" class="fadeIn fourth" value="Log In" onclick="Enviar(this.parentNode)">
+        <input type="button" class="col-10 col-sm-6 col-md-6 text-wrap fadeIn fourth" value="Sign In" onclick="Enviar(this.parentNode)">
       </form>
       <div id="formFooter">
         <a href="/">Home</a>
         <a href="/signup">Sign Up</a>
       </div>
     </div>
+
+    <div id="loader" style="display: none;"></div>
   </div>
+
   <script>
+    let loadingOn = function(){
+      let formulario = document.getElementById('formContent');
+      let loading = document.getElementById('loader');
+
+      formulario.style.display = "none";
+      loading.style.display = "block";
+    }
+
+    let loadingOff = function(){
+      let formulario = document.getElementById('formContent');
+      let loading = document.getElementById('loader');
+
+      formulario.style.display = "block";
+      loading.style.display = "none";
+    }
+
     async function Enviar(obj){
-      
       var url = '/signin';
       var Email = obj.getElementsByTagName('input')[0].value.trim();
       var Password = obj.getElementsByTagName('input')[1].value.trim();
       var data = {"Email":Email, "Password": Password};
+
+      loadingOn();
 
       let response = await fetch(url, {
         method: 'POST',
@@ -43,16 +64,18 @@
             'Content-Type': 'application/json'
           }
         });
+
       let datos = await response.json();
       
       if(response.status == 200){
         window.location = datos.mensaje;
       }
       else{
-        alert(datos.mensaje);
+        loadingOff();
+        setTimeout(() => { alert(datos.mensaje); }, 250);
       }
-      
     }
+
   </script>
 </body>
 </html>

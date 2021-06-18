@@ -7,7 +7,7 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../public/Styles/loginAlumnos.css">
-    
+    <link rel="stylesheet" href="../Public/Styles/loader.css">
     <title>Sigin Maestro</title>
 </head>
 <body>
@@ -16,46 +16,83 @@
             <div class="fadeIn first">
                 <img src="../public/user-protection.png" id="icon" alt="User Icon" style="width: 30%;" />
             </div>
-            <form method="POST" action="/Maestro/signup" enctype="application/x-www-form-urlencoded">
-                <input type="text" id="Name" class="fadeIn second" name="Name" placeholder="Name">
-                <input type="text" id="LastName" class="fadeIn second" name="LastName" placeholder="Last Name">
-                <input type="email" id="Email" class="fadeIn second" name="Email" placeholder="Email">
-                <input type="password" id="password" class="fadeIn third" name="Passowrd" placeholder="Password">
-                <input type="button" class="fadeIn fourth" value="Create" onclick="Enviar(this.parentNode)">
+            <form method="POST" action="" enctype="application/x-www-form-urlencoded">
+                <input type="text" id="Name" class="fadeIn second" name="Name" placeholder="Name" required>
+                <input type="text" id="LastName" class="fadeIn second" name="LastName" placeholder="Last Name" required>
+                <input type="email" id="Email" class="fadeIn second" name="Email" placeholder="Email" required>
+                <input type="password" id="password" class="fadeIn third" name="Passowrd" placeholder="Password" required>
+                <input type="button" class="col-10 col-sm-6 col-md-6 btn text-wrap fadeIn fourth" value="Create" onclick="Enviar(this.parentNode)">
             </form>
             <div id="formFooter">
                 <a href="/">Home</a>
                 <a href="/signin">Sign In</a>
             </div>
         </div>
+        <div id="loader" style="display: none;"></div>
     </div>
     <script>
-       async function Enviar(obj){
-            
-            let url = '/signup'
+        let validacionFormulario = function(obj){
             var Name = obj.getElementsByTagName('input')[0].value.trim();
             var LastName = obj.getElementsByTagName('input')[1].value.trim();
             var Email = obj.getElementsByTagName('input')[2].value.trim();
             var Password = obj.getElementsByTagName('input')[3].value.trim();
-            var data = {"Name": Name, "LastName":LastName, "Email":Email, "Password": Password};
 
-            let response = await fetch(url, {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(data),
-                headers:{
-                    'Content-Type': 'application/json'
+            if(Name == "" || LastName == "" || Email == "" || Password == ""){
+                return -1;
+            }
+            
+            return 1;
+        }
+
+        let loadingOn = function(){
+            let formulario = document.getElementById('formContent');
+            let loading = document.getElementById('loader');
+
+            formulario.style.display = "none";
+            loading.style.display = "block";
+        }
+
+        let loadingOff = function(){
+            let formulario = document.getElementById('formContent');
+            let loading = document.getElementById('loader');
+
+            formulario.style.display = "block";
+            loading.style.display = "none";
+        }
+
+       async function Enviar(obj){
+            if(validacionFormulario(obj) == 1){
+                let url = '/signup'
+                var Name = obj.getElementsByTagName('input')[0].value.trim();
+                var LastName = obj.getElementsByTagName('input')[1].value.trim();
+                var Email = obj.getElementsByTagName('input')[2].value.trim();
+                var Password = obj.getElementsByTagName('input')[3].value.trim();
+                var data = {"Name": Name, "LastName":LastName, "Email":Email, "Password": Password};
+    
+                loadingOn();
+
+                let response = await fetch(url, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: JSON.stringify(data),
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                let datos = await response.json();
+                
+                if(response.status == 200){
+                    alert(datos.mensaje);
+                    window.location = '/signin';
                 }
-            });
-            
-            let datos = await response.json();
-            
-            if(response.status == 200){
-                alert(datos.mensaje);
-                window.location = '/signin';
+                else{
+                    loadingOff();
+                    setTimeout(() => { alert(datos.mensaje); }, 250);
+                }
             }
             else{
-                alert(datos.mensaje);
+                alert("Todos los campos son requeridos");
             }
         }
     </script>

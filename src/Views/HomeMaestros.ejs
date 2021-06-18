@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Board Class</title>
+    <title>Home Maestros</title>
  
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
@@ -63,7 +63,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" onclick="Update(this.parentNode.parentNode);">Save changes</button>
+              <button type="button" class="btn btn-success" onclick="Update(this.parentNode.parentNode);">Save changes</button>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="ADD(this.parentNode.parentNode);">Save changes</button>
+            <button type="button" class="btn btn-success" onclick="ADD(this.parentNode.parentNode);">Save changes</button>
         </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
             </div>
             <br>
             <div class=" table-responsive">
-             <table class="table table-list-search">
+                <table class="table table-list-search">
                     <thead>
                         <tr>
                             <th scope="col">Name Event</th>
@@ -153,11 +153,12 @@
                                 <td><%= Eventos[i].TiempoInicio%></td>
                                 <td><%= Eventos[i].TiempoExpiracion%></td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" onclick="Ver(this.parentNode.parentNode);">Ver</button>
+                                    <button type="button" class=" btn btn-primary btn-block" onclick="Ver(this.parentNode.parentNode);">Ver</button>
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#EditarAula" onclick="Edit(this.parentNode.parentNode);">Edit</button>
-                                    <button class="btn btn-secundary" type="submit" onclick="Delete(this.parentNode.parentNode);">Delete</button>
+                                    <button type="button" class=" btn btn-info btn-block" data-toggle="modal" data-target="#EditarAula" onclick="Edit(this.parentNode.parentNode);">Edit</button>
+                                    
+                                    <button type="button" class=" btn btn-danger btn-block" onclick="Delete(this.parentNode.parentNode);">Delete</button>
                                 </td>
                             </tr>
                         <%}%>
@@ -447,23 +448,25 @@
         }
 
         async function Delete(obj){
-            let id = obj.getElementsByTagName('td')[0].innerText;
-            let response = await fetch('/eliminarEvento/'+id, {
-                method: 'DELETE', 
-                credentials: 'include',
-                headers:{
-                    'Content-Type': 'application/json'
+            if(confirm("Quieres Eliminar el Evento")){
+                let id = obj.getElementsByTagName('td')[0].innerText;
+                let response = await fetch('/eliminarEvento/'+id, {
+                    method: 'DELETE', 
+                    credentials: 'include',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                let mensaje = await response.json();
+    
+                if(response.status == 200){
+                    alert("Eliminado");
+                    location.reload();
                 }
-            });
-
-            let mensaje = await response.json();
-
-            if(response.status == 200){
-                alert("Eliminado");
-                location.reload();
-            }
-            else{
-                alert(mensaje.Mensaje);
+                else{
+                    alert(mensaje.Mensaje);
+                }
             }
         }
     </script>
