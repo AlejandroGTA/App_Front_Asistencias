@@ -8,46 +8,37 @@ exports.home = function(req, res, next){
 };
 
 exports.signUpGoogle = async function(req,res,next){
-
     var data = {"Name":req.user.family_name, "LastName":req.user.given_name, "Email":req.user.email};
 
-    // provider: 'google',
-    // sub: '101907695297427906253',
-    // id: '101907695297427906253',
-    // displayName: 'GUTIERREZ AGUILAR ALEJANDRO',
-    // name: { givenName: 'GUTIERREZ AGUILAR', familyName: 'ALEJANDRO' },
-    // given_name: 'GUTIERREZ AGUILAR',
-    // family_name: 'ALEJANDRO',
-    // email_verified: true,
-    // verified: true,
-    // language: 'es',
-    // locale: undefined,
-    // email: 'agutierrez21@ucol.mx',
-    // emails: [ { value: 'agutierrez21@ucol.mx', type: 'account' } ],
-    // photos: [
+    let email = req.user.email.split('@');
 
-    let response = await fetch(url+'/login/google', {
-        method: 'POST', 
-        credentials: 'include',
-        body: JSON.stringify(data),
-        headers:{
-            'Content-Type': 'application/json'
+    if(email[1] == 'ucol.mx'){
+        let response = await fetch(url+'/login/google', {
+            method: 'POST', 
+            credentials: 'include',
+            body: JSON.stringify(data),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        });
+    
+        let mensaje = await response.json();
+        if(response.status == 200){
+            req.session.user = mensaje;
+            res.redirect('/home');
         }
-    });
-
-    let mensaje = await response.json();
-    if(response.status == 200){
-        req.session.user = mensaje;
-        res.redirect('/home');
+        else{
+            res.redirect('/');
+        }
     }
     else{
-        console.log(mensaje);
-        res.redirect('/');
+        let mensaje = '<script>alert("Correo no institucional");window.location = "/";</script>';
+        res.send(mensaje);
     }
 };
 
 exports.signUpUser = function(req, res, next){
-    res.render('SignUp');
+    res.redirect('/');
 };
 
 exports.signUpSaveUser = async function(req, res, next){
