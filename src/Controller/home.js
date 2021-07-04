@@ -11,21 +11,6 @@ exports.signUpGoogle = async function(req,res,next){
 
     var data = {"Name":req.user.family_name, "LastName":req.user.given_name, "Email":req.user.email};
 
-    // provider: 'google',
-    // sub: '101907695297427906253',
-    // id: '101907695297427906253',
-    // displayName: 'GUTIERREZ AGUILAR ALEJANDRO',
-    // name: { givenName: 'GUTIERREZ AGUILAR', familyName: 'ALEJANDRO' },
-    // given_name: 'GUTIERREZ AGUILAR',
-    // family_name: 'ALEJANDRO',
-    // email_verified: true,
-    // verified: true,
-    // language: 'es',
-    // locale: undefined,
-    // email: 'agutierrez21@ucol.mx',
-    // emails: [ { value: 'agutierrez21@ucol.mx', type: 'account' } ],
-    // photos: [
-
     let response = await fetch(url+'/login/google', {
         method: 'POST', 
         credentials: 'include',
