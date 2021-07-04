@@ -1,8 +1,15 @@
 const express = require('express');
+const passport = require('passport');
 const route = express.Router();
 const ControllrerHome = require('../Controller/home');
 
+require('../Controller/authGoogle');
+
 route.get('/', ControllrerHome.home);
+
+route.get('/auth/google', passport.authenticate('google',{scope:['email','profile']}));
+
+route.get('/auth/google/callback', passport.authenticate('google',{}),ControllrerHome.signUpGoogle);
 
 route.get('/signup', ControllrerHome.authUserForms, ControllrerHome.signUpUser);
 

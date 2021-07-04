@@ -5,6 +5,8 @@ const engine = require('ejs-mate');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
+const passport = require('passport');
+require('./Controller/authGoogle');
 
 app.set('views',path.join(__dirname,'Views'));
 app.engine('ejs',engine);
@@ -18,6 +20,8 @@ app.use(session({
     resave: true,
     saveUninitialized: false
 }));
+
+app.use(passport.initialize());
 
 app.use('/', require('./Routes/Home'));
 

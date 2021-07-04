@@ -175,8 +175,8 @@
                 let mensaje = await response.json();
     
                 if(response.status == 200){
+                    obj.remove();
                     alert("Eliminado");
-                    location.reload();
                 }
                 else{
                     alert(mensaje.Mensaje);

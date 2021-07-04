@@ -358,9 +358,6 @@
                     "Localizacion": "0,0"
                 };
             }
-            console.log(obj);
-            console.log(checkCordenadas);
-            console.log(data);
 
             let response = await fetch('/agregarEvento', {
                 method: 'POST', 
@@ -461,8 +458,8 @@
                 let mensaje = await response.json();
     
                 if(response.status == 200){
-                    alert("Eliminado");
-                    location.reload();
+                    // alert("Eliminado");
+                    obj.remove();
                 }
                 else{
                     alert(mensaje.Mensaje);
